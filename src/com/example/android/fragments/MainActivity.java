@@ -15,10 +15,13 @@
  */
 package com.example.android.fragments;
 
+import iuam.group.accounting.R;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import iuam.group.accounting.R;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 public class MainActivity extends Activity
         implements HeadlinesFragment.OnHeadlineSelectedListener {
@@ -51,11 +54,42 @@ public class MainActivity extends Activity
             getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, firstFragment).commit();
         }
-              
-        Depense.addDepense("Burgers", 45);
-        Depense.addDepense("Cinema", 63);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case R.id.menu_add:
+    		// Comportement du bouton "Add" pour une dépense
+    		//Depense.addDepense("Burgers", 45);
+    		// Create fragment and give it an argument for the selected article
+    		
+    		//TODO: into function
+            ArticleFragment newFragment = new ArticleFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
+            
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+
+    
     public void onArticleSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
 

@@ -17,9 +17,11 @@ package com.example.android.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import iuam.group.accounting.R;
 
@@ -58,6 +60,12 @@ public class ArticleFragment extends Fragment {
             // Set article based on saved instance state defined during onCreateView
             updateArticleView(mCurrentPosition);
         }
+        
+        //Setup
+        Time now = new Time();
+        now.setToNow();
+        Button whenButton = (Button) getView().findViewById(R.id.btnWhen);
+        whenButton.setText(now.month + "/" + now.monthDay + "/" + now.year + " - " + now.hour + ":" + now.minute);
     }
 
     public void updateArticleView(int position) {

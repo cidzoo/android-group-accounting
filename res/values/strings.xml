@@ -16,5 +16,7 @@ limitations under the License.
 -->
 
 <resources>
-    <string name="app_name">Fragment Basics</string>
+    <string name="app_name">Group Accounting</string>
+    <string name="menu_add">add expense</string>
+    <string name="add_when">When?</string>
 </resources>
