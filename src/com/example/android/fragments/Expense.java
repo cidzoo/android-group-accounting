@@ -17,35 +17,35 @@ package com.example.android.fragments;
 
 import java.util.LinkedList;
 
-public class Depense {
+public class Expense {
 
-	static LinkedList<Depense> depenses = new LinkedList<Depense>();
+	static LinkedList<Expense> expenses = new LinkedList<Expense>();
 	
-	String nom;
-	int prix;
+	String name;
+	int price;
 	
-	public static void addDepense(String nom, int prix){
-		Depense d = new Depense();
+	public static void addExpense(String name, int price){
+		Expense d = new Expense();
 		
-		d.nom = nom;
-		d.prix = prix;
+		d.name = name;
+		d.price = price;
 		
-		depenses.add(d);
+		expenses.add(d);
 	}
 	
-	public String getNom(){
-		return nom;
+	public String getName(){
+		return name;
 	}
 	
-	public int getPrix(){
-		return prix;
+	public int getPrice(){
+		return price;
 	}
 	
-	public static String[] getNomStringArray(){
-		String[] nomArray = new String[depenses.size()];
+	public static String[] getNameStringArray(){
+		String[] nomArray = new String[expenses.size()];
 		
-		for(int i=0;i<depenses.size();i++){
-			nomArray[i]=((Depense)depenses.get(i)).nom;
+		for(int i=0;i<expenses.size();i++){
+			nomArray[i]=((Expense)expenses.get(i)).name;
 		}
 		
 		return nomArray;

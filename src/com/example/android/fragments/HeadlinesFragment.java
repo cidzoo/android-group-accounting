@@ -30,7 +30,7 @@ public class HeadlinesFragment extends ListFragment {
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnHeadlineSelectedListener {
         /** Called by HeadlinesFragment when a list item is selected */
-        public void onArticleSelected(int position);
+        public void onExpenseSelected(int position);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class HeadlinesFragment extends ListFragment {
                 android.R.layout.simple_list_item_activated_1 : android.R.layout.simple_list_item_1;
 
         // Create an array adapter for the list view, using the Ipsum headlines array
-        setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Depense.getNomStringArray()));
+        setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Expense.getNameStringArray()));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class HeadlinesFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Notify the parent activity of selected item
-        mCallback.onArticleSelected(position);
+        mCallback.onExpenseSelected(position);
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);

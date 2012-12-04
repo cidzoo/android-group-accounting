@@ -31,7 +31,8 @@ limitations under the License.
         android:id="@+id/btnWhen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_when" />
+        android:text="@string/add_when"
+        android:onClick="showDatePickerDialog" />
 
     <TextView
         android:id="@+id/article"

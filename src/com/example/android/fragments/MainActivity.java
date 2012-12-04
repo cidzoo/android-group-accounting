@@ -17,11 +17,13 @@ package com.example.android.fragments;
 
 import iuam.group.accounting.R;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends Activity
         implements HeadlinesFragment.OnHeadlineSelectedListener {
@@ -59,9 +61,18 @@ public class MainActivity extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity, menu);
+        inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
+    
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		menu.getItem(0).setVisible(true);
+		menu.getItem(1).setVisible(false);
+		return true;
+	}
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -72,7 +83,7 @@ public class MainActivity extends Activity
     		// Create fragment and give it an argument for the selected article
     		
     		//TODO: into function
-            ArticleFragment newFragment = new ArticleFragment();
+            ExpenseFragment newFragment = new ExpenseFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
             // Replace whatever is in the fragment_container view with this fragment,
@@ -84,32 +95,46 @@ public class MainActivity extends Activity
             transaction.commit();
             
     		return true;
+    	case R.id.menu_done:
+    		Expense.addExpense("Burger", 32);
+    		
+    		HeadlinesFragment newFragment2 = new HeadlinesFragment();
+            FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction2.replace(R.id.fragment_container, newFragment2);
+            transaction2.addToBackStack(null);
+
+            // Commit the transaction
+            transaction2.commit();
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
     }
 
     
-    public void onArticleSelected(int position) {
+    public void onExpenseSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
 
         // Capture the article fragment from the activity layout
-        ArticleFragment articleFrag = (ArticleFragment)
+        ExpenseFragment articleFrag = (ExpenseFragment)
                 getFragmentManager().findFragmentById(R.id.article_fragment);
 
         if (articleFrag != null) {
             // If article frag is available, we're in two-pane layout...
 
             // Call a method in the ArticleFragment to update its content
-            articleFrag.updateArticleView(position);
+            articleFrag.updateExpenseView(position);
 
         } else {
             // If the frag is not available, we're in the one-pane layout and must swap frags...
 
             // Create fragment and give it an argument for the selected article
-            ArticleFragment newFragment = new ArticleFragment();
+            ExpenseFragment newFragment = new ExpenseFragment();
             Bundle args = new Bundle();
-            args.putInt(ArticleFragment.ARG_POSITION, position);
+            args.putInt(ExpenseFragment.ARG_POSITION, position);
             newFragment.setArguments(args);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
@@ -121,5 +146,17 @@ public class MainActivity extends Activity
             // Commit the transaction
             transaction.commit();
         }
+    }
+    
+    /*
+     * LISTENERS
+     */
+    
+    public void showDatePickerDialog(View v) {
+    	DialogFragment newTimeFragment = new TimePickerFragment();
+        newTimeFragment.show(getFragmentManager(), "timePicker");
+        
+        DialogFragment newDateFragment = new DatePickerFragment();
+        newDateFragment.show(getFragmentManager(), "datePicker");
     }
 }

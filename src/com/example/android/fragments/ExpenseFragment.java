@@ -19,13 +19,15 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import iuam.group.accounting.R;
 
-public class ArticleFragment extends Fragment {
+public class ExpenseFragment extends Fragment {
     final static String ARG_POSITION = "position";
     int mCurrentPosition = -1;
 
@@ -41,10 +43,26 @@ public class ArticleFragment extends Fragment {
         }
 
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.article_view, container, false);
     }
+    
+//    @Override
+//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//		// TODO Auto-generated method stub
+//		super.onCreateOptionsMenu(menu, inflater);
+//		
+//	}
 
-    @Override
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		menu.getItem(0).setVisible(false);
+		menu.getItem(1).setVisible(true);
+	}
+
+	@Override
     public void onStart() {
         super.onStart();
 
@@ -55,23 +73,23 @@ public class ArticleFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             // Set article based on argument passed in
-            updateArticleView(args.getInt(ARG_POSITION));
+            updateExpenseView(args.getInt(ARG_POSITION));
         } else if (mCurrentPosition != -1) {
             // Set article based on saved instance state defined during onCreateView
-            updateArticleView(mCurrentPosition);
+            updateExpenseView(mCurrentPosition);
         }
         
-        //Setup
+        //Setup button text
         Time now = new Time();
         now.setToNow();
         Button whenButton = (Button) getView().findViewById(R.id.btnWhen);
         whenButton.setText(now.month + "/" + now.monthDay + "/" + now.year + " - " + now.hour + ":" + now.minute);
     }
 
-    public void updateArticleView(int position) {
+    public void updateExpenseView(int position) {
         TextView article = (TextView) getActivity().findViewById(R.id.article);
-        article.setText(((Depense)Depense.depenses.get(position)).getNom()
-        		+ "\nPrix \t: " + ((Depense)Depense.depenses.get(position)).getPrix() + ".- CHF\n");
+        article.setText(((Expense)Expense.expenses.get(position)).getName()
+        		+ "\nPrix \t: " + ((Expense)Expense.expenses.get(position)).getPrice() + ".- CHF\n");
         mCurrentPosition = position;
     }
 

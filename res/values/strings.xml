@@ -17,6 +17,7 @@ limitations under the License.
 
 <resources>
     <string name="app_name">Group Accounting</string>
-    <string name="menu_add">add expense</string>
+    <string name="menu_add">New expense</string>
     <string name="add_when">When?</string>
+    <string name="menu_done">Done</string>
 </resources>
