@@ -35,6 +35,49 @@ limitations under the License.
         android:onClick="showDatePickerDialog" />
 
     <TextView
+        android:id="@+id/txtWho"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_who"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+    <Spinner
+	    android:id="@+id/members_spinner"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" />
+    
+    <TextView
+        android:id="@+id/txtHowMuch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_how_much"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/textboxHowMuch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" >
+
+        <requestFocus />
+    </EditText>
+    
+    <TextView
+        android:id="@+id/txtWhat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_what"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/textboxWhat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/add_what_hint" />
+    
+    <TextView
         android:id="@+id/article"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

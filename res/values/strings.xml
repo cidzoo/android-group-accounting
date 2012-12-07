@@ -18,6 +18,18 @@ limitations under the License.
 <resources>
     <string name="app_name">Group Accounting</string>
     <string name="menu_add">New expense</string>
-    <string name="add_when">When?</string>
     <string name="menu_done">Done</string>
+    <string name="add_when">When?</string>
+    <string name="add_who">Who paid?</string>
+    <string name="add_how_much">How much?</string>
+    <string name="add_what">What?</string>
+    
+    <string-array name="members_array">
+        <item>Michael</item>
+        <item>Christian</item>
+        <item>Constant</item>
+        <item>Romain</item>
+    </string-array>
+        <string name="add_what_hint">optional</string>
+    
 </resources>

@@ -16,18 +16,38 @@
 package com.example.android.fragments;
 
 import iuam.group.accounting.R;
+
+import java.util.Calendar;
+
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TimePicker;
 
 public class MainActivity extends Activity
-        implements HeadlinesFragment.OnHeadlineSelectedListener {
+        implements HeadlinesFragment.OnHeadlineSelectedListener, OnItemSelectedListener {
 
+    protected static Time time = new Time();
+	CharSequence payer;
+	int price;
+	String description;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +75,7 @@ public class MainActivity extends Activity
             // Add the fragment to the 'fragment_container' FrameLayout
             getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, firstFragment).commit();
-        }
+        }    
     }
 
     @Override
@@ -96,7 +116,14 @@ public class MainActivity extends Activity
             
     		return true;
     	case R.id.menu_done:
-    		Expense.addExpense("Burger", 32);
+    		EditText editTextHowMuch = (EditText) findViewById(R.id.textboxHowMuch);
+    		price = Integer.valueOf(editTextHowMuch.getText().toString());
+    		EditText editTextWhat = (EditText) findViewById(R.id.textboxWhat);
+    		description = editTextWhat.getText().toString();
+	    		
+	    	if (!description.isEmpty()) Expense.addExpense(time, payer, price, description);
+	    	else Expense.addExpense(time, payer, price);
+    	    		
     		
     		HeadlinesFragment newFragment2 = new HeadlinesFragment();
             FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
@@ -159,4 +186,64 @@ public class MainActivity extends Activity
         DialogFragment newDateFragment = new DatePickerFragment();
         newDateFragment.show(getFragmentManager(), "datePicker");
     }
+    
+    public void onItemSelected(AdapterView<?> parent, View view, 
+            int pos, long id) {
+    	payer=(CharSequence)parent.getItemAtPosition(pos);
+    }
+    
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+    /*
+     * INNER CLASSES
+     */
+    public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the current date as the default date in the picker
+    		final Calendar c = Calendar.getInstance();
+    		int year = c.get(Calendar.YEAR);
+    		int month = c.get(Calendar.MONTH);
+    		int day = c.get(Calendar.DAY_OF_MONTH);
+    		
+    		// Create a new instance of DatePickerDialog and return it
+    		return new DatePickerDialog(getActivity(), this, year, month, day);
+    	}
+    	
+    	public void onDateSet(DatePicker view, int year, int month, int day) {
+    		time.year=year;
+    		time.month = month;
+    		time.monthDay = day;
+    		Button whenButton = (Button) findViewById(R.id.btnWhen);
+            whenButton.setText(time.month + "/" + time.monthDay + "/" + time.year + " - " + time.hour + ":" + time.minute);
+    	}
+    }
+    
+    public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+    	
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the current time as the default values for the picker
+    		final Calendar c = Calendar.getInstance();
+    		int hour = c.get(Calendar.HOUR_OF_DAY);
+    		int minute = c.get(Calendar.MINUTE);
+    		
+    		// Create a new instance of TimePickerDialog and return it
+    		return new TimePickerDialog(getActivity(), this, hour, minute,
+    		DateFormat.is24HourFormat(getActivity()));
+    	}
+    	
+    	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    		time.hour = hourOfDay;
+    		time.minute = minute;
+    		Button whenButton = (Button) findViewById(R.id.btnWhen);
+            whenButton.setText(time.month + "/" + time.monthDay + "/" + time.year + " - " + time.hour + ":" + time.minute);
+    	}
+    }
+
 }

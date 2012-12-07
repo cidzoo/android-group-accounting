@@ -15,17 +15,19 @@
  */
 package com.example.android.fragments;
 
+import iuam.group.accounting.R;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
-import iuam.group.accounting.R;
 
 public class ExpenseFragment extends Fragment {
     final static String ARG_POSITION = "position";
@@ -44,7 +46,7 @@ public class ExpenseFragment extends Fragment {
 
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.article_view, container, false);
+        return inflater.inflate(R.layout.expense_view, container, false);
     }
     
 //    @Override
@@ -80,16 +82,37 @@ public class ExpenseFragment extends Fragment {
         }
         
         //Setup button text
-        Time now = new Time();
-        now.setToNow();
-        Button whenButton = (Button) getView().findViewById(R.id.btnWhen);
-        whenButton.setText(now.month + "/" + now.monthDay + "/" + now.year + " - " + now.hour + ":" + now.minute);
+//        Time now = new Time();
+//        now.setToNow();
+//        Button whenButton = (Button) getView().findViewById(R.id.btnWhen);
+//        whenButton.setText(now.month + "/" + now.monthDay + "/" + now.year + " - " + now.hour + ":" + now.minute);
+        
+		Spinner spinner = (Spinner) getView().findViewById(R.id.members_spinner);
+		// Create an ArrayAdapter using the string array and a default spinner layout
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getView().getContext(),
+		    R.array.members_array, android.R.layout.simple_spinner_item);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener((OnItemSelectedListener) getView().getContext());
     }
 
     public void updateExpenseView(int position) {
+    	Expense ex = (Expense)Expense.expenses.get(position);
+    	
+    	Button btnWhen = (Button) getActivity().findViewById(R.id.btnWhen);
+    	Spinner spinnerMembers = (Spinner) getActivity().findViewById(R.id.members_spinner);
+    	EditText textboxHowMuch = (EditText) getActivity().findViewById(R.id.textboxHowMuch);
+    	EditText textboxWhat = (EditText) getActivity().findViewById(R.id.textboxWhat);
+    	
+    	btnWhen.setText(ex.getTimeToString());
+    	//FIXME spinnerMembers.setId(1);
+    	textboxHowMuch.setText(String.valueOf(ex.getPrice()));
+    	textboxWhat.setText(ex.getDescription());
+    	
         TextView article = (TextView) getActivity().findViewById(R.id.article);
-        article.setText(((Expense)Expense.expenses.get(position)).getName()
-        		+ "\nPrix \t: " + ((Expense)Expense.expenses.get(position)).getPrice() + ".- CHF\n");
+        //article.setText(ex.toString());
         mCurrentPosition = position;
     }
 
