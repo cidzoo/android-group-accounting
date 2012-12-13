@@ -21,26 +21,45 @@ import android.text.format.Time;
 
 public class Expense {
 
-	public static LinkedList<Expense> expenses = new LinkedList<Expense>();
+	/*
+	 * Static
+	 */
+	private static int expenseCounter;
+	private static LinkedList<Expense> expenses = new LinkedList<Expense>();
+
+	public static void addExpense(Expense ex) { getExpenses().add(ex); }
 	
+	public static String[] getDescriptionStringArray(){
+		String[] nomArray = new String[getExpenses().size()];
+		
+		for(int i=0;i<getExpenses().size();i++){
+			nomArray[i]=((Expense)getExpenses().get(i)).description;
+		}
+		
+		return nomArray;
+	}
+	
+	/*
+	 * Dynamic
+	 */
 	Time time;
 	CharSequence payer;
 	int price;
 	String description;
 	
-	public static void addExpense(Time time, CharSequence payer, int price){
-		addExpense(time, payer, price, "Expense " + (expenses.size()+1));
+	public Expense(){ 
+		expenseCounter++; 
+		
+		time = new Time();
+		time.setToNow();
+		this.description = "Expense " + expenseCounter;
 	}
 	
-	public static void addExpense(Time time, CharSequence payer, int price, String description){
-		Expense d = new Expense();
-		
-		d.time = time;
-		d.payer = payer;
-		d.price = price;
-		d.description = description;
-			
-		expenses.add(d);
+	public Expense(CharSequence payer, int price, String description){
+		this();
+		this.payer=payer;
+		this.price=price;
+		this.description=description;
 	}
 	
 	public String getDescription(){
@@ -49,16 +68,6 @@ public class Expense {
 	
 	public int getPrice(){
 		return price;
-	}
-	
-	public static String[] getDescriptionStringArray(){
-		String[] nomArray = new String[expenses.size()];
-		
-		for(int i=0;i<expenses.size();i++){
-			nomArray[i]=((Expense)expenses.get(i)).description;
-		}
-		
-		return nomArray;
 	}
 
 	public Time getTime() {
@@ -78,5 +87,21 @@ public class Expense {
         		+ "Price \t: " + price + ".- CHF\n"
         		+ "Payer \t:" + payer + "\n"
         		+ "Time \t: " + time.toString();
+	}
+
+	public static LinkedList<Expense> getExpenses() {
+		return expenses;
+	}
+
+	public static void setExpenses(LinkedList<Expense> expenses) {
+		Expense.expenses = expenses;
+	}
+
+	public void setDescription(String string) {
+		this.description=string;
+	}
+
+	public void setPrice(Integer valueOf) {
+		this.price=valueOf;		
 	}
 }

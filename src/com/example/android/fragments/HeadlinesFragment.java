@@ -15,20 +15,20 @@
  */
 package com.example.android.fragments;
 
+import iuam.group.accounting.R;
 import android.app.Activity;
 import android.app.ListFragment;
-import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import iuam.group.accounting.R;
 
 public class HeadlinesFragment extends ListFragment {
-    OnHeadlineSelectedListener mCallback;
+    HeadlinesFragmentListener mListener;
 
     // The container Activity must implement this interface so the frag can deliver messages
-    public interface OnHeadlineSelectedListener {
+    public interface HeadlinesFragmentListener {
         /** Called by HeadlinesFragment when a list item is selected */
         public void onExpenseSelected(int position);
     }
@@ -40,8 +40,10 @@ public class HeadlinesFragment extends ListFragment {
         // We need to use a different list item layout for devices older than Honeycomb
         int layout =  android.R.layout.simple_list_item_activated_1;
 
-        // Create an array adapter for the list view, using the Ipsum headlines array
+        // Create an array adapter for the list view
         setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Expense.getDescriptionStringArray()));
+        //This has menus
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -55,24 +57,39 @@ public class HeadlinesFragment extends ListFragment {
         }
     }
 
-    @Override
+//    @Override
+//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//			Bundle savedInstanceState) {
+//		
+//    	return inflater.inflate(R.layout.news_articles, container, false);
+//	}
+
+	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
         try {
-            mCallback = (OnHeadlineSelectedListener) activity;
+            mListener = (HeadlinesFragmentListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
     }
+    
+    @Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		menu.getItem(0).setVisible(true);
+		menu.getItem(1).setVisible(false);
+		super.onPrepareOptionsMenu(menu);
+	}
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Notify the parent activity of selected item
-        mCallback.onExpenseSelected(position);
+        mListener.onExpenseSelected(position);
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);

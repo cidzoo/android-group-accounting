@@ -19,6 +19,8 @@ import iuam.group.accounting.R;
 
 import java.util.Calendar;
 
+import com.example.android.fragments.ExpenseFragment.ExpenseFragmentListener;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -32,21 +34,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 
 public class MainActivity extends Activity
-        implements HeadlinesFragment.OnHeadlineSelectedListener, OnItemSelectedListener {
+        implements HeadlinesFragment.HeadlinesFragmentListener, ExpenseFragmentListener {
 
     protected static Time time = new Time();
 	CharSequence payer;
 	int price;
 	String description;
+	private boolean modifing;
 	
     /** Called when the activity is first created. */
     @Override
@@ -58,14 +58,10 @@ public class MainActivity extends Activity
         // the fragment_container FrameLayout. If so, we must add the first fragment
         if (findViewById(R.id.fragment_container) != null) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return;
-            }
+            // If activity is restored, no need to create the fragment again
+            if (savedInstanceState != null) { return; }
 
-            // Create an instance of ExampleFragment
+            // Create an instance of HeadlinesFragment
             HeadlinesFragment firstFragment = new HeadlinesFragment();
 
             // In case this activity was started with special instructions from an Intent,
@@ -85,19 +81,20 @@ public class MainActivity extends Activity
         return true;
     }
     
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		super.onPrepareOptionsMenu(menu);
-		menu.getItem(0).setVisible(true);
-		menu.getItem(1).setVisible(false);
-		return true;
-	}
+//	@Override
+//	public boolean onPrepareOptionsMenu(Menu menu) {
+//		// TODO Auto-generated method stub
+//		super.onPrepareOptionsMenu(menu);
+//		menu.getItem(0).setVisible(true);
+//		menu.getItem(1).setVisible(false);
+//		return true;
+//	}
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     	case R.id.menu_add:
+    		modifing = false;
     		// Comportement du bouton "Add" pour une dépense
     		//Depense.addDepense("Burgers", 45);
     		// Create fragment and give it an argument for the selected article
@@ -113,29 +110,8 @@ public class MainActivity extends Activity
 
             // Commit the transaction
             transaction.commit();
-            
     		return true;
-    	case R.id.menu_done:
-    		EditText editTextHowMuch = (EditText) findViewById(R.id.textboxHowMuch);
-    		price = Integer.valueOf(editTextHowMuch.getText().toString());
-    		EditText editTextWhat = (EditText) findViewById(R.id.textboxWhat);
-    		description = editTextWhat.getText().toString();
-	    		
-	    	if (!description.isEmpty()) Expense.addExpense(time, payer, price, description);
-	    	else Expense.addExpense(time, payer, price);
-    	    		
     		
-    		HeadlinesFragment newFragment2 = new HeadlinesFragment();
-            FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction2.replace(R.id.fragment_container, newFragment2);
-            transaction2.addToBackStack(null);
-
-            // Commit the transaction
-            transaction2.commit();
-    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
@@ -144,16 +120,16 @@ public class MainActivity extends Activity
     
     public void onExpenseSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
-
+    	modifing = true;
         // Capture the article fragment from the activity layout
-        ExpenseFragment articleFrag = (ExpenseFragment)
+        ExpenseFragment expenseFragment = (ExpenseFragment)
                 getFragmentManager().findFragmentById(R.id.article_fragment);
 
-        if (articleFrag != null) {
+        if (expenseFragment != null) {
             // If article frag is available, we're in two-pane layout...
 
             // Call a method in the ArticleFragment to update its content
-            articleFrag.updateExpenseView(position);
+            expenseFragment.updateExpenseView(position);
 
         } else {
             // If the frag is not available, we're in the one-pane layout and must swap frags...
@@ -186,17 +162,6 @@ public class MainActivity extends Activity
         DialogFragment newDateFragment = new DatePickerFragment();
         newDateFragment.show(getFragmentManager(), "datePicker");
     }
-    
-    public void onItemSelected(AdapterView<?> parent, View view, 
-            int pos, long id) {
-    	payer=(CharSequence)parent.getItemAtPosition(pos);
-    }
-    
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 	
     /*
      * INNER CLASSES
@@ -245,5 +210,30 @@ public class MainActivity extends Activity
             whenButton.setText(time.month + "/" + time.monthDay + "/" + time.year + " - " + time.hour + ":" + time.minute);
     	}
     }
+
+	@Override
+	public void onMenuDoneCallback(Expense expense) {
+		// TODO do this in fragment
+		EditText editTextHowMuch = (EditText) findViewById(R.id.textboxHowMuch);
+		expense.setPrice(Integer.valueOf(editTextHowMuch.getText().toString()));
+		EditText editTextWhat = (EditText) findViewById(R.id.textboxWhat);
+		if(editTextWhat.getText().length() > 0)
+			expense.setDescription(description = editTextWhat.getText().toString());
+    	
+		if(!modifing)
+			Expense.addExpense(expense);
+	    		
+		
+		HeadlinesFragment newFragment2 = new HeadlinesFragment();
+        FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction2.replace(R.id.fragment_container, newFragment2);
+        transaction2.addToBackStack(null);
+
+        // Commit the transaction
+        transaction2.commit();
+	}
 
 }
