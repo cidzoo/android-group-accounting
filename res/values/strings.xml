@@ -23,6 +23,8 @@ limitations under the License.
     <string name="add_who">Who paid?</string>
     <string name="add_how_much">How much?</string>
     <string name="add_what">What?</string>
+    <string name="toast_no_price">Please enter the price</string>
+    <string name="strCHF">.- CHF</string>
     
     <string-array name="members_array">
         <item>Michael</item>

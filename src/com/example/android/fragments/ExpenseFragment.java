@@ -15,26 +15,36 @@
  */
 package com.example.android.fragments;
 
-import com.example.android.fragments.HeadlinesFragment.HeadlinesFragmentListener;
-
 import iuam.group.accounting.R;
+
+import java.util.Calendar;
+
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-public class ExpenseFragment extends Fragment implements OnItemSelectedListener {
+public class ExpenseFragment extends Fragment implements OnItemSelectedListener, OnClickListener {
 	
 	ExpenseFragmentListener mListener;
 	
@@ -48,8 +58,14 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener 
 	
     final static String ARG_POSITION = "position";
     int mCurrentPosition = -1;
-	private CharSequence payer;
 	private Expense currentExpense;
+	private Button btnDate;
+	private Button btnTime;
+	private Spinner spinnerMembers;
+	private EditText editWhat;
+	private NumberPicker npDecade;
+	private NumberPicker npUnit;
+	private NumberPicker npHundred;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, 
@@ -65,32 +81,47 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener 
         //Inflate the layout for this fragment        
         View view = inflater.inflate(R.layout.expense_view, container, false);
         
-        Spinner spinner = (Spinner) view.findViewById(R.id.members_spinner);
+        /* get widgets */
+    	btnDate = (Button) view.findViewById(R.id.btnDate);
+    	btnTime = (Button) view.findViewById(R.id.btnTime);
+    	spinnerMembers = (Spinner) view.findViewById(R.id.members_spinner);
+    	npHundred = (NumberPicker) view.findViewById(R.id.numberPickerHundred);
+    	npDecade = (NumberPicker) view.findViewById(R.id.numberPickerDecade);
+    	npUnit = (NumberPicker) view.findViewById(R.id.numberPickerUnit);
+    	editWhat = (EditText) view.findViewById(R.id.textboxWhat);
+    	
+        /* Time and Date */
+    	btnDate.setOnClickListener((OnClickListener) this);
+        btnTime.setOnClickListener((OnClickListener) this);
+        
+        /* Price */
+        
+//        String[] nums = new String[20];
+//        for(int i=0; i<nums.length; i++)
+//               nums[i] = Integer.toString(i);
+
+        npHundred.setMinValue(0); npHundred.setMaxValue(9); npHundred.setWrapSelectorWheel(false); npHundred.setValue(0);
+        npDecade.setMinValue(0); npDecade.setMaxValue(9); npDecade.setWrapSelectorWheel(false); npDecade.setValue(0);
+        npUnit.setMinValue(0); npUnit.setMaxValue(9); npUnit.setWrapSelectorWheel(false); npUnit.setValue(0);
+        
+        /* Payer */
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
 		    R.array.members_array, android.R.layout.simple_spinner_item);
 		// Specify the layout to use when the list of choices appears
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
-		spinner.setAdapter(adapter);
-		spinner.setOnItemSelectedListener((OnItemSelectedListener) this);
+		spinnerMembers.setAdapter(adapter);
+		spinnerMembers.setOnItemSelectedListener((OnItemSelectedListener) this);
 		
         //allow to define action bar menus for this fragment
         setHasOptionsMenu(true);
         
         return view;
     }
-    
-//    @Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//		// TODO Auto-generated method stub
-//		super.onCreateOptionsMenu(menu, inflater);
-//		
-//	}
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		super.onPrepareOptionsMenu(menu);
 		menu.getItem(0).setVisible(false);
 		menu.getItem(1).setVisible(true);
@@ -118,24 +149,24 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener 
         }
         
         //Setup button text
-        Button whenButton = (Button) getView().findViewById(R.id.btnWhen);
-        whenButton.setText(currentExpense.getTimeToString());
+        btnDate.setText(currentExpense.getDateToString());
+        btnTime.setText(currentExpense.getTimeToString());
     }
 
     public void updateExpenseView(int position) {
     	
-    	Button btnWhen = (Button) getActivity().findViewById(R.id.btnWhen);
-    	Spinner spinnerMembers = (Spinner) getActivity().findViewById(R.id.members_spinner);
-    	EditText textboxHowMuch = (EditText) getActivity().findViewById(R.id.textboxHowMuch);
-    	EditText textboxWhat = (EditText) getActivity().findViewById(R.id.textboxWhat);
+    	btnDate.setText(currentExpense.getDateToString());
+    	btnTime.setText(currentExpense.getTimeToString());
+    	spinnerMembers.setSelection(currentExpense.getPayer(), true);
     	
-    	btnWhen.setText(currentExpense.getTimeToString());
-    	//FIXME spinnerMembers.setId(1);
-    	textboxHowMuch.setText(String.valueOf(currentExpense.getPrice()));
-    	textboxWhat.setText(currentExpense.getDescription());
+    	int price = currentExpense.getPrice();
+    	String strPrice = String.valueOf(price);
+    	npHundred.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[0])));
+    	npDecade.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[1])));
+    	npUnit.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[2])));
     	
-        TextView article = (TextView) getActivity().findViewById(R.id.article);
-        //article.setText(ex.toString());
+    	editWhat.setText(currentExpense.getDescription());
+    	
         mCurrentPosition = position;
     }
 
@@ -149,7 +180,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener 
 
     public void onItemSelected(AdapterView<?> parent, View view, 
             int pos, long id) {
-    	payer=(CharSequence)parent.getItemAtPosition(pos);
+    	//payer=(CharSequence)parent.getItemAtPosition(pos);
     }
     
 	@Override
@@ -158,9 +189,28 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        
         case R.id.menu_done:
+        	/* Payer */
+        	currentExpense.setPayerId(spinnerMembers.getSelectedItemPosition());
+        	
+        	/* Price */
+        	currentExpense.setPrice(npHundred.getValue()*100 + npDecade.getValue()*10 + npUnit.getValue());
+//    		try{
+//    			currentExpense.setPrice(Integer.valueOf(editHowMuch.getText().toString()));
+//    		}catch(NumberFormatException e){
+//    			Toast.makeText(getActivity(), getString(R.string.toast_no_price), Toast.LENGTH_SHORT).show();
+//    			return true; //consumed
+//    		}
+    		
+    		/* Description */
+    		if(editWhat.getText().length() > 0)
+    			currentExpense.setDescription(editWhat.getText().toString());
+        	
+    		//Expense correctly fill up, pass it to listener
             mListener.onMenuDoneCallback(currentExpense);
             return true;
+        
         default:
             // Not one of ours. Perform default menu processing
             return super.onOptionsItemSelected(item);
@@ -179,5 +229,78 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener 
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
+	}
+	
+	/*
+     * LISTENERS
+     */
+    
+    public void showDatePickerDialog(View v) {
+    	DialogFragment newTimeFragment = new TimePickerFragment();
+        newTimeFragment.show(getFragmentManager(), "timePicker");
+        
+        DialogFragment newDateFragment = new DatePickerFragment();
+        newDateFragment.show(getFragmentManager(), "datePicker");
+    }
+    
+    /*
+     * INNER CLASSES
+     */
+    public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the current date as the default date in the picker
+    		final Calendar c = Calendar.getInstance();
+    		int year = c.get(Calendar.YEAR);
+    		int month = c.get(Calendar.MONTH);
+    		int day = c.get(Calendar.DAY_OF_MONTH);
+    		
+    		// Create a new instance of DatePickerDialog and return it
+    		return new DatePickerDialog(getActivity(), this, year, month, day);
+    	}
+    	
+    	public void onDateSet(DatePicker view, int year, int month, int day) {
+    		currentExpense.time.year=year;
+    		currentExpense.time.month = month;
+    		currentExpense.time.monthDay = day;
+            btnDate.setText(month + "/" + day + "/" + year);
+    	}
+    }
+    
+    public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+    	
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the current time as the default values for the picker
+    		final Calendar c = Calendar.getInstance();
+    		int hour = c.get(Calendar.HOUR_OF_DAY);
+    		int minute = c.get(Calendar.MINUTE);
+    		
+    		// Create a new instance of TimePickerDialog and return it
+    		return new TimePickerDialog(getActivity(), this, hour, minute,
+    		DateFormat.is24HourFormat(getActivity()));
+    	}
+    	
+    	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    		currentExpense.time.hour = hourOfDay;
+    		currentExpense.time.minute = minute;
+            btnTime.setText(hourOfDay + ":" + minute);
+    	}
+    }
+
+	@Override
+	public void onClick(View arg0) {
+		switch (arg0.getId()) {
+		case R.id.btnDate:	        
+	        DialogFragment newDateFragment = new DatePickerFragment();
+	        newDateFragment.show(getFragmentManager(), "datePicker");
+	        break;
+		case R.id.btnTime:
+	        DialogFragment newTimeFragment = new TimePickerFragment();
+	        newTimeFragment.show(getFragmentManager(), "timePicker");
+	        break;
+		}
+		
 	}
 }

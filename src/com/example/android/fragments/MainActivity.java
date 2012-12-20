@@ -16,31 +16,19 @@
 package com.example.android.fragments;
 
 import iuam.group.accounting.R;
-
-import java.util.Calendar;
-
-import com.example.android.fragments.ExpenseFragment.ExpenseFragmentListener;
-
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TimePicker;
+
+import com.example.android.fragments.ExpenseFragment.ExpenseFragmentListener;
+import com.example.android.fragments.HeadlinesFragment.HeadlinesFragmentListener;
 
 public class MainActivity extends Activity
-        implements HeadlinesFragment.HeadlinesFragmentListener, ExpenseFragmentListener {
+        implements HeadlinesFragmentListener, ExpenseFragmentListener {
 
     protected static Time time = new Time();
 	CharSequence payer;
@@ -52,7 +40,7 @@ public class MainActivity extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.news_articles);
+        setContentView(R.layout.headlines_view);
 
         // Check whether the activity is using the layout version with
         // the fragment_container FrameLayout. If so, we must add the first fragment
@@ -150,79 +138,12 @@ public class MainActivity extends Activity
             transaction.commit();
         }
     }
-    
-    /*
-     * LISTENERS
-     */
-    
-    public void showDatePickerDialog(View v) {
-    	DialogFragment newTimeFragment = new TimePickerFragment();
-        newTimeFragment.show(getFragmentManager(), "timePicker");
-        
-        DialogFragment newDateFragment = new DatePickerFragment();
-        newDateFragment.show(getFragmentManager(), "datePicker");
-    }
-	
-    /*
-     * INNER CLASSES
-     */
-    public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-    	@Override
-    	public Dialog onCreateDialog(Bundle savedInstanceState) {
-    		// Use the current date as the default date in the picker
-    		final Calendar c = Calendar.getInstance();
-    		int year = c.get(Calendar.YEAR);
-    		int month = c.get(Calendar.MONTH);
-    		int day = c.get(Calendar.DAY_OF_MONTH);
-    		
-    		// Create a new instance of DatePickerDialog and return it
-    		return new DatePickerDialog(getActivity(), this, year, month, day);
-    	}
-    	
-    	public void onDateSet(DatePicker view, int year, int month, int day) {
-    		time.year=year;
-    		time.month = month;
-    		time.monthDay = day;
-    		Button whenButton = (Button) findViewById(R.id.btnWhen);
-            whenButton.setText(time.month + "/" + time.monthDay + "/" + time.year + " - " + time.hour + ":" + time.minute);
-    	}
-    }
-    
-    public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
-    	
-    	@Override
-    	public Dialog onCreateDialog(Bundle savedInstanceState) {
-    		// Use the current time as the default values for the picker
-    		final Calendar c = Calendar.getInstance();
-    		int hour = c.get(Calendar.HOUR_OF_DAY);
-    		int minute = c.get(Calendar.MINUTE);
-    		
-    		// Create a new instance of TimePickerDialog and return it
-    		return new TimePickerDialog(getActivity(), this, hour, minute,
-    		DateFormat.is24HourFormat(getActivity()));
-    	}
-    	
-    	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    		time.hour = hourOfDay;
-    		time.minute = minute;
-    		Button whenButton = (Button) findViewById(R.id.btnWhen);
-            whenButton.setText(time.month + "/" + time.monthDay + "/" + time.year + " - " + time.hour + ":" + time.minute);
-    	}
-    }
 
 	@Override
 	public void onMenuDoneCallback(Expense expense) {
-		// TODO do this in fragment
-		EditText editTextHowMuch = (EditText) findViewById(R.id.textboxHowMuch);
-		expense.setPrice(Integer.valueOf(editTextHowMuch.getText().toString()));
-		EditText editTextWhat = (EditText) findViewById(R.id.textboxWhat);
-		if(editTextWhat.getText().length() > 0)
-			expense.setDescription(description = editTextWhat.getText().toString());
-    	
+		    	
 		if(!modifing)
 			Expense.addExpense(expense);
-	    		
 		
 		HeadlinesFragment newFragment2 = new HeadlinesFragment();
         FragmentTransaction transaction2 = getFragmentManager().beginTransaction();

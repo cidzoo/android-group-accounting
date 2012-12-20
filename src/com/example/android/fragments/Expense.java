@@ -43,7 +43,7 @@ public class Expense {
 	 * Dynamic
 	 */
 	Time time;
-	CharSequence payer;
+	int payerId;
 	int price;
 	String description;
 	
@@ -55,9 +55,9 @@ public class Expense {
 		this.description = "Expense " + expenseCounter;
 	}
 	
-	public Expense(CharSequence payer, int price, String description){
+	public Expense(int payerId, int price, String description){
 		this();
-		this.payer=payer;
+		this.payerId=payerId;
 		this.price=price;
 		this.description=description;
 	}
@@ -74,34 +74,30 @@ public class Expense {
 		return time;
 	}
 	
-	public String getTimeToString(){
-		return time.month + "/" + time.monthDay + "/" + time.year + " - " + time.hour + ":" + time.minute;
+	public String getDateToString(){
+		return time.month + "/" + time.monthDay + "/" + time.year;
 	}
-
-	public String getPayer() {
-		return payer.toString();
+	
+	public String getTimeToString(){
+		return time.hour + ":" + time.minute;
 	}
 	
 	public String toString(){
 		return description + "\n"
         		+ "Price \t: " + price + ".- CHF\n"
-        		+ "Payer \t:" + payer + "\n"
+        		+ "Payer \t:" + payerId + "\n"
         		+ "Time \t: " + time.toString();
 	}
 
-	public static LinkedList<Expense> getExpenses() {
-		return expenses;
-	}
+	public static LinkedList<Expense> getExpenses() { return expenses; }
 
-	public static void setExpenses(LinkedList<Expense> expenses) {
-		Expense.expenses = expenses;
-	}
+	public static void setExpenses(LinkedList<Expense> expenses) { Expense.expenses = expenses; }
 
-	public void setDescription(String string) {
-		this.description=string;
-	}
+	public void setDescription(String string) { this.description=string; }
 
-	public void setPrice(Integer valueOf) {
-		this.price=valueOf;		
-	}
+	public void setPrice(Integer valueOf) { this.price=valueOf; }
+
+	public void setPayerId(int value) { payerId = value; }
+	
+	public int getPayer() { return payerId; }
 }
