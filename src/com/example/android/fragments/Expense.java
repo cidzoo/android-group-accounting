@@ -24,20 +24,22 @@ public class Expense {
 	/*
 	 * Static
 	 */
-	private static int expenseCounter;
+	private static int unamedExpenseCounter;
 	private static LinkedList<Expense> expenses = new LinkedList<Expense>();
 
-	public static void addExpense(Expense ex) { getExpenses().add(ex); }
+	public static void addExpense(Expense ex) { expenses.add(ex); }
 	
 	public static String[] getDescriptionStringArray(){
-		String[] nomArray = new String[getExpenses().size()];
+		String[] nomArray = new String[expenses.size()];
 		
-		for(int i=0;i<getExpenses().size();i++){
-			nomArray[i]=((Expense)getExpenses().get(i)).description;
+		for(int i=0;i<expenses.size();i++){
+			nomArray[i]=((Expense)expenses.get(i)).description;
 		}
 		
 		return nomArray;
 	}
+	
+	public static LinkedList<Expense> getExpenses() { return expenses; }
 	
 	/*
 	 * Dynamic
@@ -48,11 +50,11 @@ public class Expense {
 	String description;
 	
 	public Expense(){ 
-		expenseCounter++; 
+		unamedExpenseCounter++; 
 		
 		time = new Time();
 		time.setToNow();
-		this.description = "Expense " + expenseCounter;
+		this.description = "Expense " + unamedExpenseCounter;
 	}
 	
 	public Expense(int payerId, int price, String description){
@@ -62,24 +64,16 @@ public class Expense {
 		this.description=description;
 	}
 	
-	public String getDescription(){
-		return description;
-	}
-	
-	public int getPrice(){
-		return price;
-	}
-
-	public Time getTime() {
-		return time;
-	}
-	
 	public String getDateToString(){
 		return time.month + "/" + time.monthDay + "/" + time.year;
 	}
 	
 	public String getTimeToString(){
-		return time.hour + ":" + time.minute;
+		String strHours = String.valueOf(time.hour);
+		strHours = strHours.length()==1 ? "0" + strHours : strHours;
+		String strMinutes = String.valueOf(time.minute);
+		strMinutes = strMinutes.length()==1 ? "0" + strMinutes : strMinutes;
+		return strHours + ":" + strMinutes;
 	}
 	
 	public String toString(){
@@ -89,15 +83,14 @@ public class Expense {
         		+ "Time \t: " + time.toString();
 	}
 
-	public static LinkedList<Expense> getExpenses() { return expenses; }
-
-	public static void setExpenses(LinkedList<Expense> expenses) { Expense.expenses = expenses; }
-
+	public Time getTime() { return time; }
+	
 	public void setDescription(String string) { this.description=string; }
+	public String getDescription(){ return description; }
 
 	public void setPrice(Integer valueOf) { this.price=valueOf; }
-
-	public void setPayerId(int value) { payerId = value; }
+	public int getPrice(){ return price; }
 	
-	public int getPayer() { return payerId; }
+	public void setPayerId(int value) { payerId = value; }
+	public int getPayerId() { return payerId; }
 }

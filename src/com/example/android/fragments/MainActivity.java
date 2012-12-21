@@ -17,24 +17,22 @@ package com.example.android.fragments;
 
 import iuam.group.accounting.R;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.android.fragments.AddParticipantDialogFragment.NewParticipantFragmentListener;
 import com.example.android.fragments.ExpenseFragment.ExpenseFragmentListener;
 import com.example.android.fragments.HeadlinesFragment.HeadlinesFragmentListener;
 
-public class MainActivity extends Activity
-        implements HeadlinesFragmentListener, ExpenseFragmentListener {
+public class MainActivity extends Activity implements HeadlinesFragmentListener, ExpenseFragmentListener, NewParticipantFragmentListener {
 
-    protected static Time time = new Time();
-	CharSequence payer;
-	int price;
-	String description;
 	private boolean modifing;
+	private boolean isGroupSetupMode;
 	
     /** Called when the activity is first created. */
     @Override
@@ -42,6 +40,10 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.headlines_view);
 
+        //If first launch = add participants mode
+        isGroupSetupMode=true;
+        setTitle(R.string.title_setup_group);
+        
         // Check whether the activity is using the layout version with
         // the fragment_container FrameLayout. If so, we must add the first fragment
         if (findViewById(R.id.fragment_container) != null) {
@@ -54,12 +56,15 @@ public class MainActivity extends Activity
 
             // In case this activity was started with special instructions from an Intent,
             // pass the Intent's extras to the fragment as arguments
-            firstFragment.setArguments(getIntent().getExtras());
+            Bundle args = new Bundle();
+            args.putBoolean("isGroupSetupMode", isGroupSetupMode);
+            firstFragment.setArguments(args);
+            //firstFragment.setArguments(getIntent().getExtras());
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
-        }    
+                    .add(R.id.fragment_container, firstFragment, "headlines").commit();
+        }  
     }
 
     @Override
@@ -69,37 +74,57 @@ public class MainActivity extends Activity
         return true;
     }
     
-//	@Override
-//	public boolean onPrepareOptionsMenu(Menu menu) {
-//		// TODO Auto-generated method stub
-//		super.onPrepareOptionsMenu(menu);
-//		menu.getItem(0).setVisible(true);
-//		menu.getItem(1).setVisible(false);
-//		return true;
-//	}
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		menu.getItem(0).setVisible(true);
+		if(isGroupSetupMode)
+			menu.getItem(1).setVisible(true);
+		else
+			menu.getItem(1).setVisible(false);
+		return true;
+	}
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     	case R.id.menu_add:
-    		modifing = false;
-    		// Comportement du bouton "Add" pour une dépense
-    		//Depense.addDepense("Burgers", 45);
-    		// Create fragment and give it an argument for the selected article
+    		FragmentManager fm = getFragmentManager();
     		
-    		//TODO: into function
-            ExpenseFragment newFragment = new ExpenseFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    		if(isGroupSetupMode){
+    			
+    			AddParticipantDialogFragment addParticipantDialog = new AddParticipantDialogFragment();
+    			addParticipantDialog.show(fm, "fragment_add_participant");
+    		}else{
+    			modifing = false;
+        		// Comportement du bouton "Add" pour une dépense
+        		//Depense.addDepense("Burgers", 45);
+        		// Create fragment and give it an argument for the selected article
+        		
+        		//TODO: into function
+                ExpenseFragment newFragment = new ExpenseFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.fragment_container, newFragment);
-            transaction.addToBackStack(null);
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack so the user can navigate back
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack(null);
 
-            // Commit the transaction
-            transaction.commit();
+                // Commit the transaction
+                transaction.commit();	
+    		}
     		return true;
-    		
+    	
+    	case R.id.menu_done:
+    		if(isGroupSetupMode){
+    			isGroupSetupMode=false;
+    			item.setVisible(false);
+    			((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
+    		}else{
+    			return super.onOptionsItemSelected(item);
+    		}
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
@@ -144,17 +169,30 @@ public class MainActivity extends Activity
 		    	
 		if(!modifing)
 			Expense.addExpense(expense);
-		
+        
 		HeadlinesFragment newFragment2 = new HeadlinesFragment();
         FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
+        
+		Bundle args = new Bundle();
+        args.putBoolean(ExpenseFragment.ARG_POSITION, isGroupSetupMode);
+        newFragment2.setArguments(args);
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-        transaction2.replace(R.id.fragment_container, newFragment2);
+        transaction2.replace(R.id.fragment_container, newFragment2, "headlines");
         transaction2.addToBackStack(null);
 
         // Commit the transaction
         transaction2.commit();
+	}
+
+	@Override
+	public void onFinishEditDialog(String inputText) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, inputText + " has been added", Toast.LENGTH_SHORT).show();
+		Participant.addParticipants(new Participant(inputText));
+		
+		((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
 	}
 
 }

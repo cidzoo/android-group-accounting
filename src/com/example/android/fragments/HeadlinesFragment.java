@@ -37,11 +37,7 @@ public class HeadlinesFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // We need to use a different list item layout for devices older than Honeycomb
-        int layout =  android.R.layout.simple_list_item_activated_1;
-
-        // Create an array adapter for the list view
-        setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Expense.getDescriptionStringArray()));
+        update(getArguments().getBoolean("isGroupSetupMode"));
         //This has menus
         setHasOptionsMenu(true);
     }
@@ -56,6 +52,8 @@ public class HeadlinesFragment extends ListFragment {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
     }
+    
+    
 
 //    @Override
 //	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,13 +76,13 @@ public class HeadlinesFragment extends ListFragment {
         }
     }
     
-    @Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		menu.getItem(0).setVisible(true);
-		menu.getItem(1).setVisible(false);
-		super.onPrepareOptionsMenu(menu);
-	}
+//    @Override
+//	public void onPrepareOptionsMenu(Menu menu) {
+//		// TODO Auto-generated method stub
+//		menu.getItem(0).setVisible(true);
+//		menu.getItem(1).setVisible(false);
+//		super.onPrepareOptionsMenu(menu);
+//	}
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -94,4 +92,15 @@ public class HeadlinesFragment extends ListFragment {
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
     }
+    
+    public void update(Boolean isGroupSetupMode){
+    	int layout =  android.R.layout.simple_list_item_activated_1;
+    	if(isGroupSetupMode){
+			setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Participant.getDescriptionStringArray()));
+    	}else{
+    		setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Expense.getDescriptionStringArray()));
+    	}
+		super.onResume();
+    }
+
 }

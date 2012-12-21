@@ -42,7 +42,6 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 public class ExpenseFragment extends Fragment implements OnItemSelectedListener, OnClickListener {
 	
@@ -95,21 +94,17 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
         btnTime.setOnClickListener((OnClickListener) this);
         
         /* Price */
-        
-//        String[] nums = new String[20];
-//        for(int i=0; i<nums.length; i++)
-//               nums[i] = Integer.toString(i);
-
         npHundred.setMinValue(0); npHundred.setMaxValue(9); npHundred.setWrapSelectorWheel(false); npHundred.setValue(0);
         npDecade.setMinValue(0); npDecade.setMaxValue(9); npDecade.setWrapSelectorWheel(false); npDecade.setValue(0);
         npUnit.setMinValue(0); npUnit.setMaxValue(9); npUnit.setWrapSelectorWheel(false); npUnit.setValue(0);
         
         /* Payer */
 		// Create an ArrayAdapter using the string array and a default spinner layout
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
-		    R.array.members_array, android.R.layout.simple_spinner_item);
+//		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
+//		    R.array.members_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_dropdown_item,Participant.getDescriptionStringArray());
 		// Specify the layout to use when the list of choices appears
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		//adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		spinnerMembers.setAdapter(adapter);
 		spinnerMembers.setOnItemSelectedListener((OnItemSelectedListener) this);
@@ -157,13 +152,19 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
     	
     	btnDate.setText(currentExpense.getDateToString());
     	btnTime.setText(currentExpense.getTimeToString());
-    	spinnerMembers.setSelection(currentExpense.getPayer(), true);
+    	spinnerMembers.setSelection(currentExpense.getPayerId(), true);
     	
     	int price = currentExpense.getPrice();
     	String strPrice = String.valueOf(price);
-    	npHundred.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[0])));
-    	npDecade.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[1])));
-    	npUnit.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[2])));
+    	int len = strPrice.length();
+    	
+    	for (int i=0;i<3-len;i++){
+    		strPrice = "0" + strPrice;
+    	}
+    	
+    	try{npHundred.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[0])));}catch(Exception e){}
+    	try{npDecade.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[1])));}catch(Exception e){}
+    	try{npUnit.setValue(Integer.valueOf(String.valueOf(strPrice.toCharArray()[2])));}catch(Exception e){}
     	
     	editWhat.setText(currentExpense.getDescription());
     	
@@ -264,7 +265,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
     		currentExpense.time.year=year;
     		currentExpense.time.month = month;
     		currentExpense.time.monthDay = day;
-            btnDate.setText(month + "/" + day + "/" + year);
+            btnDate.setText(currentExpense.getDateToString());
     	}
     }
     
@@ -282,10 +283,10 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
     		DateFormat.is24HourFormat(getActivity()));
     	}
     	
-    	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    	public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
     		currentExpense.time.hour = hourOfDay;
-    		currentExpense.time.minute = minute;
-            btnTime.setText(hourOfDay + ":" + minute);
+    		currentExpense.time.minute = minutes;
+            btnTime.setText(currentExpense.getTimeToString());
     	}
     }
 

@@ -17,6 +17,9 @@ limitations under the License.
 
 <resources>
     <string name="app_name">Group Accounting</string>
+    <string name="title_setup_group">Group setup</string>
+    <string name="str_add_member">Enter participant name here</string>
+    <string name="title_new_participant">Add a participant</string>
     <string name="menu_add">New expense</string>
     <string name="menu_done">Done</string>
     <string name="add_when">When?</string>
