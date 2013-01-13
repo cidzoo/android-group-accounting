@@ -30,7 +30,7 @@ public class HeadlinesFragment extends ListFragment {
     // The container Activity must implement this interface so the frag can deliver messages
     public interface HeadlinesFragmentListener {
         /** Called by HeadlinesFragment when a list item is selected */
-        public void onExpenseSelected(int position);
+        public void onHeadlineSelected(int position);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class HeadlinesFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Notify the parent activity of selected item
-        mListener.onExpenseSelected(position);
+        mListener.onHeadlineSelected(position);
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);

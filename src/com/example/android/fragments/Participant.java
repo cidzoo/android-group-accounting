@@ -39,7 +39,7 @@ public class Participant {
 		return nomArray;
 	}
 	
-	public static void setParticipants(LinkedList<Participant> expenses) { Participant.participants = expenses; }
+	public static LinkedList<Participant> getParticipants() { return participants; }
 	
 	/*
 	 * Dynamic

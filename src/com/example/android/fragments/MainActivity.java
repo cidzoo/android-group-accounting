@@ -23,6 +23,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.fragments.AddParticipantDialogFragment.NewParticipantFragmentListener;
@@ -43,6 +45,7 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
         //If first launch = add participants mode
         isGroupSetupMode=true;
         setTitle(R.string.title_setup_group);
+        ((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE); 
         
         // Check whether the activity is using the layout version with
         // the fragment_container FrameLayout. If so, we must add the first fragment
@@ -67,7 +70,7 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
         }  
     }
 
-    @Override
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
@@ -80,7 +83,10 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		super.onPrepareOptionsMenu(menu);
 		menu.getItem(0).setVisible(true);
 		if(isGroupSetupMode)
-			menu.getItem(1).setVisible(true);
+			if (Participant.getDescriptionStringArray().length==0)
+				menu.getItem(1).setVisible(false);
+			else
+				menu.getItem(1).setVisible(true);
 		else
 			menu.getItem(1).setVisible(false);
 		return true;
@@ -98,10 +104,8 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     			addParticipantDialog.show(fm, "fragment_add_participant");
     		}else{
     			modifing = false;
-        		// Comportement du bouton "Add" pour une dépense
-        		//Depense.addDepense("Burgers", 45);
-        		// Create fragment and give it an argument for the selected article
-        		
+    			((ImageView)findViewById(R.id.helpImage)).setVisibility(View.GONE);
+        		// Create fragment and give it an argument for the selected article        		
         		//TODO: into function
                 ExpenseFragment newFragment = new ExpenseFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -117,10 +121,13 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     		return true;
     	
     	case R.id.menu_done:
+    		setTitle(R.string.title_expenses);
     		if(isGroupSetupMode){
     			isGroupSetupMode=false;
     			item.setVisible(false);
     			((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
+    			((ImageView)findViewById(R.id.helpImage)).setImageResource(R.drawable.help_expenses);
+        		((ImageView)findViewById(R.id.helpImage)).setVisibility(View.VISIBLE);
     		}else{
     			return super.onOptionsItemSelected(item);
     		}
@@ -131,37 +138,46 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     }
 
     
-    public void onExpenseSelected(int position) {
-        // The user selected the headline of an article from the HeadlinesFragment
+    public void onHeadlineSelected(int position) {
     	modifing = true;
-        // Capture the article fragment from the activity layout
-        ExpenseFragment expenseFragment = (ExpenseFragment)
-                getFragmentManager().findFragmentById(R.id.article_fragment);
-
-        if (expenseFragment != null) {
-            // If article frag is available, we're in two-pane layout...
-
-            // Call a method in the ArticleFragment to update its content
-            expenseFragment.updateExpenseView(position);
-
-        } else {
-            // If the frag is not available, we're in the one-pane layout and must swap frags...
-
-            // Create fragment and give it an argument for the selected article
-            ExpenseFragment newFragment = new ExpenseFragment();
-            Bundle args = new Bundle();
-            args.putInt(ExpenseFragment.ARG_POSITION, position);
-            newFragment.setArguments(args);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.fragment_container, newFragment);
-            transaction.addToBackStack(null);
-
-            // Commit the transaction
-            transaction.commit();
-        }
+    	
+    	if(!isGroupSetupMode){
+	    	// The user selected the headline of an article from the HeadlinesFragment
+	    	
+	        // Capture the article fragment from the activity layout
+	        ExpenseFragment expenseFragment = (ExpenseFragment)
+	                getFragmentManager().findFragmentById(R.id.article_fragment);
+	
+	        if (expenseFragment != null) {
+	            // If article frag is available, we're in two-pane layout...
+	
+	            // Call a method in the ArticleFragment to update its content
+	            expenseFragment.updateExpenseView(position);
+	
+	        } else {
+	            // If the frag is not available, we're in the one-pane layout and must swap frags...
+	
+	            // Create fragment and give it an argument for the selected article
+	            ExpenseFragment newFragment = new ExpenseFragment();
+	            Bundle args = new Bundle();
+	            args.putInt(ExpenseFragment.ARG_POSITION, position);
+	            newFragment.setArguments(args);
+	            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	
+	            // Replace whatever is in the fragment_container view with this fragment,
+	            // and add the transaction to the back stack so the user can navigate back
+	            transaction.replace(R.id.fragment_container, newFragment);
+	            transaction.addToBackStack(null);
+	
+	            // Commit the transaction
+	            transaction.commit();
+	        }
+    	}
+    	else{
+    		FragmentManager fm = getFragmentManager();
+    		AddParticipantDialogFragment addParticipantDialog = new AddParticipantDialogFragment(Participant.getParticipants().get(position));
+			addParticipantDialog.show(fm, "fragment_add_participant");
+    	}
     }
 
 	@Override
@@ -169,6 +185,8 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		    	
 		if(!modifing)
 			Expense.addExpense(expense);
+		
+		((ImageView)findViewById(R.id.background_image)).setVisibility(View.VISIBLE);
         
 		HeadlinesFragment newFragment2 = new HeadlinesFragment();
         FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
@@ -188,11 +206,16 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 
 	@Override
 	public void onFinishEditDialog(String inputText) {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, inputText + " has been added", Toast.LENGTH_SHORT).show();
-		Participant.addParticipants(new Participant(inputText));
+		
+		if(!modifing){
+			Toast.makeText(this, inputText + " has been added to the group", Toast.LENGTH_SHORT).show();
+			Participant.addParticipants(new Participant(inputText));
+		}
 		
 		((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
+		
+		invalidateOptionsMenu(); //to force menu refresh to display done button
+		findViewById(R.id.helpImage).setVisibility(View.GONE);
 	}
 
 }

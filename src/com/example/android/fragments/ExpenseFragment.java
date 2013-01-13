@@ -50,7 +50,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
     // The container Activity must implement this interface so the frag can deliver messages
     public interface ExpenseFragmentListener {
         /** Called by HeadlinesFragment when a list item is selected */
-        public void onExpenseSelected(int position);
+        public void onHeadlineSelected(int position);
 
 		public void onMenuDoneCallback(Expense expense);
     }
@@ -125,7 +125,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
 	@Override
     public void onStart() {
         super.onStart();
-
+        
         // During startup, check if there are arguments passed to the fragment.
         // onStart is a good place to do this because the layout has already been
         // applied to the fragment at this point so we can safely call the method
@@ -135,12 +135,15 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
         	currentExpense = (Expense)Expense.getExpenses().get(args.getInt(ARG_POSITION));
             // Set article based on argument passed in
             updateExpenseView(args.getInt(ARG_POSITION));
+            getActivity().setTitle(R.string.title_edit_expense);
         } else if (mCurrentPosition != -1) {
             // Set article based on saved instance state defined during onCreateView
             updateExpenseView(mCurrentPosition);
+            //getActivity().setTitle(R.string.title_edit_expense);
         }
         else{
         	currentExpense = new Expense();
+        	getActivity().setTitle(R.string.title_add_expense);
         }
         
         //Setup button text
@@ -299,6 +302,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
 	        break;
 		case R.id.btnTime:
 	        DialogFragment newTimeFragment = new TimePickerFragment();
+	        //newTimeFragment.setArguments(new )
 	        newTimeFragment.show(getFragmentManager(), "timePicker");
 	        break;
 		}

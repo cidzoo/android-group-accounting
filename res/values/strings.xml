@@ -18,13 +18,16 @@ limitations under the License.
 <resources>
     <string name="app_name">Group Accounting</string>
     <string name="title_setup_group">Group setup</string>
+    <string name="title_expenses">Expenses</string>
+    <string name="title_add_expense">New expense</string>
+    <string name="title_edit_expense">Edit expense</string>
     <string name="str_add_member">Enter participant name here</string>
     <string name="title_new_participant">Add a participant</string>
     <string name="menu_add">New expense</string>
     <string name="menu_done">Done</string>
     <string name="add_when">When?</string>
     <string name="add_who">Who paid?</string>
-    <string name="add_how_much">How much?</string>
+    <string name="add_how_much">CHF</string>
     <string name="add_what">What?</string>
     <string name="toast_no_price">Please enter the price</string>
     <string name="strCHF">.- CHF</string>
