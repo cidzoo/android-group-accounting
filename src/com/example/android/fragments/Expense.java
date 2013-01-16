@@ -48,7 +48,8 @@ public class Expense {
 	int payerId;
 	int price;
 	String description;
-	
+	String payerName;
+
 	public Expense(){ 
 		unamedExpenseCounter++; 
 		
@@ -57,9 +58,10 @@ public class Expense {
 		this.description = "Expense " + unamedExpenseCounter;
 	}
 	
-	public Expense(int payerId, int price, String description){
+	public Expense(int payerId, String payerName, int price, String description){
 		this();
 		this.payerId=payerId;
+		this.payerName=payerName;
 		this.price=price;
 		this.description=description;
 	}
@@ -93,4 +95,7 @@ public class Expense {
 	
 	public void setPayerId(int value) { payerId = value; }
 	public int getPayerId() { return payerId; }
+	public String getPayerName() { return payerName; }
+	public void setPayerName(String string) { payerName = string; }
+
 }

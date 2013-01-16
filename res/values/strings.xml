@@ -23,6 +23,7 @@ limitations under the License.
     <string name="title_edit_expense">Edit expense</string>
     <string name="str_add_member">Enter participant name here</string>
     <string name="title_new_participant">Add a participant</string>
+    <string name="search_title">Search</string>
     <string name="menu_add">New expense</string>
     <string name="menu_done">Done</string>
     <string name="add_when">When?</string>

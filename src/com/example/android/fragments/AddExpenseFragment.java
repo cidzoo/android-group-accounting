@@ -43,12 +43,12 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
-public class ExpenseFragment extends Fragment implements OnItemSelectedListener, OnClickListener {
+public class AddExpenseFragment extends Fragment implements OnItemSelectedListener, OnClickListener {
 	
-	ExpenseFragmentListener mListener;
+	ViewExpenseFragmentListener mListener;
 	
     // The container Activity must implement this interface so the frag can deliver messages
-    public interface ExpenseFragmentListener {
+    public interface ViewExpenseFragmentListener {
         /** Called by HeadlinesFragment when a list item is selected */
         public void onHeadlineSelected(int position);
 
@@ -78,7 +78,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
         }
         
         //Inflate the layout for this fragment        
-        View view = inflater.inflate(R.layout.expense_view, container, false);
+        View view = inflater.inflate(R.layout.expense_add_view, container, false);
         
         /* get widgets */
     	btnDate = (Button) view.findViewById(R.id.btnDate);
@@ -197,6 +197,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
         case R.id.menu_done:
         	/* Payer */
         	currentExpense.setPayerId(spinnerMembers.getSelectedItemPosition());
+        	currentExpense.setPayerName((String) spinnerMembers.getItemAtPosition(spinnerMembers.getSelectedItemPosition()));
         	
         	/* Price */
         	currentExpense.setPrice(npHundred.getValue()*100 + npDecade.getValue()*10 + npUnit.getValue());
@@ -228,7 +229,7 @@ public class ExpenseFragment extends Fragment implements OnItemSelectedListener,
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
         try {
-            mListener = (ExpenseFragmentListener) activity;
+            mListener = (ViewExpenseFragmentListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");

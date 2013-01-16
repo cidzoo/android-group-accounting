@@ -27,11 +27,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.android.fragments.AddExpenseFragment.ViewExpenseFragmentListener;
 import com.example.android.fragments.AddParticipantDialogFragment.NewParticipantFragmentListener;
-import com.example.android.fragments.ExpenseFragment.ExpenseFragmentListener;
 import com.example.android.fragments.HeadlinesFragment.HeadlinesFragmentListener;
 
-public class MainActivity extends Activity implements HeadlinesFragmentListener, ExpenseFragmentListener, NewParticipantFragmentListener {
+public class MainActivity extends Activity implements HeadlinesFragmentListener, ViewExpenseFragmentListener, NewParticipantFragmentListener {
 
 	private boolean modifing;
 	private boolean isGroupSetupMode;
@@ -71,6 +71,18 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     }
 
 	@Override
+	public void onBackPressed() {
+		FragmentManager fm = getFragmentManager();
+		for(int i = fm.getBackStackEntryCount(); i > 0 ; i--) {    
+			fm.popBackStack(i,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		}
+		super.onBackPressed();
+		((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
+		((ImageView)findViewById(R.id.background_image)).setVisibility(View.VISIBLE);
+		setTitle(R.string.title_expenses);
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
@@ -104,10 +116,11 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     			addParticipantDialog.show(fm, "fragment_add_participant");
     		}else{
     			modifing = false;
+    			((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE);
     			((ImageView)findViewById(R.id.helpImage)).setVisibility(View.GONE);
         		// Create fragment and give it an argument for the selected article        		
         		//TODO: into function
-                ExpenseFragment newFragment = new ExpenseFragment();
+                AddExpenseFragment newFragment = new AddExpenseFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
@@ -137,15 +150,15 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     	}
     }
 
-    
-    public void onHeadlineSelected(int position) {
+
+	public void onHeadlineSelected(int position) {
     	modifing = true;
     	
     	if(!isGroupSetupMode){
 	    	// The user selected the headline of an article from the HeadlinesFragment
 	    	
 	        // Capture the article fragment from the activity layout
-	        ExpenseFragment expenseFragment = (ExpenseFragment)
+	        AddExpenseFragment expenseFragment = (AddExpenseFragment)
 	                getFragmentManager().findFragmentById(R.id.article_fragment);
 	
 	        if (expenseFragment != null) {
@@ -155,12 +168,13 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	            expenseFragment.updateExpenseView(position);
 	
 	        } else {
+	        	((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE);
 	            // If the frag is not available, we're in the one-pane layout and must swap frags...
 	
 	            // Create fragment and give it an argument for the selected article
-	            ExpenseFragment newFragment = new ExpenseFragment();
+	            ViewExpenseFragment newFragment = new ViewExpenseFragment();
 	            Bundle args = new Bundle();
-	            args.putInt(ExpenseFragment.ARG_POSITION, position);
+	            args.putInt(AddExpenseFragment.ARG_POSITION, position);
 	            newFragment.setArguments(args);
 	            FragmentTransaction transaction = getFragmentManager().beginTransaction();
 	
@@ -192,7 +206,7 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
         FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
         
 		Bundle args = new Bundle();
-        args.putBoolean(ExpenseFragment.ARG_POSITION, isGroupSetupMode);
+        args.putBoolean(AddExpenseFragment.ARG_POSITION, isGroupSetupMode);
         newFragment2.setArguments(args);
 
         // Replace whatever is in the fragment_container view with this fragment,

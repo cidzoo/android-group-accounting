@@ -14,118 +14,57 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dip"
     android:orientation="vertical" >
-
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dip"  >
- 
-	   	 	<TextView
-	        android:id="@+id/txtWhen"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/add_when"
-	        android:textAppearance="?android:attr/textAppearanceMedium"
-	        android:layout_weight="1" />
-          
-            <Button
-	        android:id="@+id/btnDate"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="2" />
-            
-            <Button
-	        android:id="@+id/btnTime"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="2" />
-            
-    	</LinearLayout>
     
-
+    <ImageView
+		android:id="@+id/img"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+	   	android:layout_gravity="center"
+	   	android:layout_margin="20dp"
+	   	android:src="@drawable/expense2"
+		/>
+    
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dip"  >
-            
-	    <TextView
-	        android:id="@+id/txtWho"
-	        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  >
+        
+		<TextView
+		    android:id="@+id/description"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="16dp"
+		    android:textStyle="bold"
+		    android:textSize="24sp"
+		    android:layout_weight="1" />
+		
+		<TextView
+	        android:id="@+id/price"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:text="@string/add_who"
-	        android:layout_gravity="center"
-	        android:textAppearance="?android:attr/textAppearanceMedium" />
-	        
-	    <Spinner
-		    android:id="@+id/members_spinner"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content" />
+	        android:gravity="right"
+	        android:padding="16dp"
+	        android:textSize="24sp"
+	        android:layout_weight="2" />
+
+	</LinearLayout>
+	
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#FF909090" />
     
-    </LinearLayout>
-
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="25dip"  >
-        
-        <TextView
-        android:id="@+id/txtHowMuch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_how_much"
-
-        android:layout_gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-        <NumberPicker
-        android:id="@+id/numberPickerHundred"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dip"
-        android:layout_weight="1" />
-        
-        <NumberPicker
-        android:id="@+id/numberPickerDecade"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dip"
-        android:layout_weight="1" />
-            
-        <NumberPicker
-        android:id="@+id/numberPickerUnit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dip"
-        android:layout_weight="1" />
-        
-    </LinearLayout>
- 
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
-        
     <TextView
-        android:id="@+id/txtWhat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_what"
-        android:layout_weight="1"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/textboxWhat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_weight="1"
-        android:hint="@string/add_what_hint" />
+		    android:id="@+id/body"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:padding="16dp"
+		    android:textSize="22sp" />
     
-    </LinearLayout>
-
 </LinearLayout>
