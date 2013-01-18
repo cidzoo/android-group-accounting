@@ -93,22 +93,26 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		super.onPrepareOptionsMenu(menu);
-		menu.getItem(0).setVisible(true);
-		if(isGroupSetupMode)
-			if (Participant.getDescriptionStringArray().length==0)
-				menu.getItem(1).setVisible(false);
-			else
-				menu.getItem(1).setVisible(true);
-		else
-			menu.getItem(1).setVisible(false);
+		menu.findItem(R.id.menu_add).setVisible(true);
+		if(isGroupSetupMode){
+			if (Participant.getDescriptionStringArray().length==0){
+				menu.findItem(R.id.menu_done).setEnabled(false);
+				menu.findItem(R.id.menu_done).setIcon(R.drawable.ic_done_disabled);
+			}else{
+				menu.findItem(R.id.menu_done).setVisible(true);
+			}
+		}else{
+			menu.findItem(R.id.menu_done).setVisible(false);
+		}
 		return true;
 	}
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	FragmentManager fm = getFragmentManager();
+    	
     	switch (item.getItemId()) {
     	case R.id.menu_add:
-    		FragmentManager fm = getFragmentManager();
     		
     		if(isGroupSetupMode){
     			
@@ -145,6 +149,16 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     			return super.onOptionsItemSelected(item);
     		}
     		return true;
+    		
+    	case R.id.menu_about:
+    		AboutDialogFragment aboutDialog = new AboutDialogFragment();
+    		aboutDialog.show(fm, "fragment_about");
+    		return true;
+    		
+    	case R.id.menu_help:
+    		HelpDialogFragment helpDialog = new HelpDialogFragment();
+    		helpDialog.show(fm, "fragment_help");
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
@@ -152,7 +166,6 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 
 
 	public void onHeadlineSelected(int position) {
-    	modifing = true;
     	
     	if(!isGroupSetupMode){
 	    	// The user selected the headline of an article from the HeadlinesFragment
@@ -173,6 +186,45 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	
 	            // Create fragment and give it an argument for the selected article
 	            ViewExpenseFragment newFragment = new ViewExpenseFragment();
+	            Bundle args = new Bundle();
+	            args.putInt(AddExpenseFragment.ARG_POSITION, position);
+	            newFragment.setArguments(args);
+	            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	
+	            // Replace whatever is in the fragment_container view with this fragment,
+	            // and add the transaction to the back stack so the user can navigate back
+	            transaction.replace(R.id.fragment_container, newFragment);
+	            transaction.addToBackStack(null);
+	
+	            // Commit the transaction
+	            transaction.commit();
+	        }
+    	}
+
+    }
+	
+	public void onHeadlineEdit(int position) {
+    	modifing = true;
+    	
+    	if(!isGroupSetupMode){
+	    	// The user selected the headline of an article from the HeadlinesFragment
+	    	
+	        // Capture the article fragment from the activity layout
+	        AddExpenseFragment expenseFragment = (AddExpenseFragment)
+	                getFragmentManager().findFragmentById(R.id.article_fragment);
+	
+	        if (expenseFragment != null) {
+	            // If article frag is available, we're in two-pane layout...
+	
+	            // Call a method in the ArticleFragment to update its content
+	            expenseFragment.updateExpenseView(position);
+	
+	        } else {
+	        	((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE);
+	            // If the frag is not available, we're in the one-pane layout and must swap frags...
+	
+	            // Create fragment and give it an argument for the selected article
+	            AddExpenseFragment newFragment = new AddExpenseFragment();
 	            Bundle args = new Bundle();
 	            args.putInt(AddExpenseFragment.ARG_POSITION, position);
 	            newFragment.setArguments(args);
@@ -230,6 +282,10 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		
 		invalidateOptionsMenu(); //to force menu refresh to display done button
 		findViewById(R.id.helpImage).setVisibility(View.GONE);
+	}
+
+	public boolean isGroupSetupMode() {
+		return isGroupSetupMode;
 	}
 
 }

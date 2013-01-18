@@ -24,14 +24,24 @@ limitations under the License.
     <string name="str_add_member">Enter participant name here</string>
     <string name="title_new_participant">Add a participant</string>
     <string name="search_title">Search</string>
+    
     <string name="menu_add">New expense</string>
     <string name="menu_done">Done</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_about">About</string>
+    <string name="menu_help">Help</string>
+    
     <string name="add_when">When?</string>
     <string name="add_who">Who paid?</string>
     <string name="add_how_much">CHF</string>
     <string name="add_what">What?</string>
     <string name="toast_no_price">Please enter the price</string>
     <string name="strCHF">.- CHF</string>
+    
+    <string name="about_body">Created by Romain Maffina</string>
+    
+    <string name="help_body">You will found help here</string>
     
     <string-array name="members_array">
         <item>Michael</item>

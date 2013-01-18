@@ -17,4 +17,12 @@
           android:icon="@drawable/ic_action_done"
           android:title="@string/menu_done"
           android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/menu_about"
+          android:title="@string/menu_about"
+          android:showAsAction="withText" />
+    
+    <item android:id="@+id/menu_help"
+          android:title="@string/menu_help"
+          android:showAsAction="withText" />
 </menu>
