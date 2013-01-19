@@ -19,12 +19,20 @@ import iuam.group.accounting.R;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.android.fragments.AddExpenseFragment.ViewExpenseFragmentListener;
@@ -35,6 +43,8 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 
 	private boolean modifing;
 	private boolean isGroupSetupMode;
+	PopupWindow popUp;
+	LinearLayout layout;
 	
     /** Called when the activity is first created. */
     @Override
@@ -67,12 +77,53 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
             // Add the fragment to the 'fragment_container' FrameLayout
             getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, firstFragment, "headlines").commit();
-        }  
+        }
+        
+        /*
+         * Allow to display an help overlay for first run
+         */
+        
+        popUp = new PopupWindow(this);
+        layout = new LinearLayout(this);
+        
+        findViewById(android.R.id.content).post( new Runnable() {
+
+            @Override
+            public void run() {
+                layout.setBackgroundResource(R.drawable.help);
+                popUp.setContentView(layout);
+                popUp.setBackgroundDrawable(null);
+                popUp.setOutsideTouchable(true);
+                popUp.setBackgroundDrawable(new BitmapDrawable());
+                
+            	popUp.showAtLocation(layout, Gravity.CENTER, 0, 0);
+        		
+        		Display display = getWindowManager().getDefaultDisplay();
+        		Point size = new Point();
+        		display.getSize(size);
+        		int width = size.x;
+        		int height = size.y;
+        		
+        		popUp.update(0, 0, width, height);
+        				
+        		popUp.setTouchInterceptor(new OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						popUp.dismiss();
+						return false;
+					}
+				});
+            }
+        } );
+        
+        
     }
 
 	@Override
 	public void onBackPressed() {
 		FragmentManager fm = getFragmentManager();
+		
 		for(int i = fm.getBackStackEntryCount(); i > 0 ; i--) {    
 			fm.popBackStack(i,FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		}
@@ -145,9 +196,30 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     			((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
     			((ImageView)findViewById(R.id.helpImage)).setImageResource(R.drawable.help_expenses);
         		((ImageView)findViewById(R.id.helpImage)).setVisibility(View.VISIBLE);
+        		
+        		//Show help popup
+        		layout.setBackgroundResource(R.drawable.help_expenses);
+        		popUp.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
     		}else{
     			return super.onOptionsItemSelected(item);
     		}
+    		return true;
+    	
+    	case R.id.menu_settings:
+//    		getFragmentManager().beginTransaction()
+//            .replace(android.R.id.content, new SettingsFragment())
+//            .commit();
+    		SettingsFragment newFragment = new SettingsFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();	
     		return true;
     		
     	case R.id.menu_about:

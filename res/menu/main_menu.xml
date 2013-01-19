@@ -18,6 +18,10 @@
           android:title="@string/menu_done"
           android:showAsAction="ifRoom|withText" />
     
+    <item android:id="@+id/menu_settings"
+          android:title="@string/menu_settings"
+          android:showAsAction="withText" />
+    
     <item android:id="@+id/menu_about"
           android:title="@string/menu_about"
           android:showAsAction="withText" />

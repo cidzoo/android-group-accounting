@@ -91,9 +91,9 @@ public class ViewExpenseFragment extends Fragment {
     	textViewDescription.setText(currentExpense.getDescription());
     	textViewPrice.setText(String.valueOf(currentExpense.getPrice())+".-");
     	textViewBody.setText(
-    			"Payer :\t\t" + currentExpense.getPayerName() + "\n" +
-    			"Date : \t\t" + currentExpense.getDateToString() + "\n" +
-    			"Time : \t\t" + currentExpense.getTimeToString() + "\n"
+    			"Payer \t:\t\t" + currentExpense.getPayerName() + "\n" +
+    			"Date  \t:\t\t" + currentExpense.getDateToString() + "\n" +
+    			"Time  \t:\t\t" + currentExpense.getTimeToString() + "\n"
     			);
     	
         mCurrentPosition = position;

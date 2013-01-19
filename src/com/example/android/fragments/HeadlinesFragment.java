@@ -184,11 +184,12 @@ public class HeadlinesFragment extends ListFragment {
                 // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
                     case R.id.menu_delete:
-                    	for (Integer i : selectedItems){
+                    	int size = selectedItems.size();
+                    	for (int i=0;i<size;i++){
                     		if(isGroupSetupMode)
-                    			Participant.getParticipants().remove(i.intValue());
+                    			Participant.getParticipants().remove(selectedItems.remove()-i);
                     		else
-                    			Expense.getExpenses().remove(i.intValue());
+                    			Expense.getExpenses().remove(selectedItems.remove()-i);
                     	}	
                     	mode.finish(); // Action picked, so close the CAB
                         return true;
