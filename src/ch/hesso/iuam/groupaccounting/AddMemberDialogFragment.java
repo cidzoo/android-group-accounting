@@ -1,4 +1,4 @@
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import iuam.group.accounting.R;
 import android.app.DialogFragment;
@@ -12,25 +12,25 @@ import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
-public class AddParticipantDialogFragment extends DialogFragment implements OnEditorActionListener {
+public class AddMemberDialogFragment extends DialogFragment implements OnEditorActionListener {
 
-    public interface NewParticipantFragmentListener {
+    public interface NewMemberFragmentListener {
         void onFinishEditDialog(String inputText);
     }
 
     private EditText mEditText;
-    private Participant mCurrentParticipant;
+    private Member mCurrentMember;
 
-    public AddParticipantDialogFragment() {
+    public AddMemberDialogFragment() {
         // Empty constructor required for DialogFragment
     }
 
-    public AddParticipantDialogFragment(Participant p) {
+    public AddMemberDialogFragment(Member p) {
         super();
-        mCurrentParticipant=p;
+        mCurrentMember=p;
     }
     
     @Override
@@ -39,7 +39,7 @@ public class AddParticipantDialogFragment extends DialogFragment implements OnEd
         View view = inflater.inflate(R.layout.add_member_view, container);
         mEditText = (EditText) view.findViewById(R.id.participant_name);
         
-        if(mCurrentParticipant!=null) mEditText.setText(mCurrentParticipant.getName());
+        if(mCurrentMember!=null) mEditText.setText(mCurrentMember.getName());
         getDialog().setTitle(R.string.title_new_participant);
 
         // Show soft keyboard automatically
@@ -61,9 +61,19 @@ public class AddParticipantDialogFragment extends DialogFragment implements OnEd
     			t.show();
     			return true;
     		}
+
+    		for(int i = 0;i<Member.getDescriptionStringArray().length;i++){
+    			if (mEditText.getText().toString().equals(Member.getDescriptionStringArray()[i])){
+    				Toast t = Toast.makeText(this.getActivity(), "Member already exists", Toast.LENGTH_SHORT);
+        			t.setGravity(Gravity.CENTER_VERTICAL, 0, -20);
+        			t.show();
+        			return true;
+    			}
+    		}
+    		
             // Return input text to activity
-    		if(mCurrentParticipant!=null) mCurrentParticipant.setName(mEditText.getText().toString());
-        	NewParticipantFragmentListener activity = (NewParticipantFragmentListener) getActivity();
+    		if(mCurrentMember!=null) mCurrentMember.setName(mEditText.getText().toString());
+        	NewMemberFragmentListener activity = (NewMemberFragmentListener) getActivity();
             activity.onFinishEditDialog(mEditText.getText().toString());
             this.dismiss();
             return true;

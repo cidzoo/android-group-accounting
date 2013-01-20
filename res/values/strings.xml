@@ -21,11 +21,11 @@ limitations under the License.
     <string name="title_expenses">Expenses</string>
     <string name="title_add_expense">New expense</string>
     <string name="title_edit_expense">Edit expense</string>
-    <string name="str_add_member">Enter participant name here</string>
-    <string name="title_new_participant">Add a participant</string>
+    <string name="str_add_member">Enter member name here</string>
+    <string name="title_new_participant">Add a member</string>
     <string name="search_title">Search</string>
     
-    <string name="menu_add">New expense</string>
+    <string name="menu_add">Add</string>
     <string name="menu_done">Done</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_edit">Edit</string>
@@ -45,12 +45,6 @@ limitations under the License.
     <string name="help_body">This app allows you to manage very easily the group expenses. 
         Therefore it\'s very useful when you plan some week-end activities or holidays with friends or family. </string>
     
-    <string-array name="members_array">
-        <item>Michael</item>
-        <item>Christian</item>
-        <item>Constant</item>
-        <item>Romain</item>
-    </string-array>
-        <string name="add_what_hint">optional</string>
+    <string name="add_what_hint">Optional</string>
     
 </resources>

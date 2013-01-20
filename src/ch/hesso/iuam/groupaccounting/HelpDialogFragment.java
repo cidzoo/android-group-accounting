@@ -1,4 +1,4 @@
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import iuam.group.accounting.R;
 import android.app.DialogFragment;
@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager.LayoutParams;
-import android.widget.EditText;
 
 public class HelpDialogFragment extends DialogFragment {
 
@@ -23,4 +21,5 @@ public class HelpDialogFragment extends DialogFragment {
         getDialog().setTitle(R.string.menu_help);
         return view;
     }
+
 }

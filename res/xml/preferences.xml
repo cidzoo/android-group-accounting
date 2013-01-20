@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
     <CheckBoxPreference
         android:key="pref_sync"
-        android:title="title"
-        android:summary="summary"
+        android:title="Use spinners"
+        android:summary="In add expense view"
+        android:enabled="false"
         android:defaultValue="true" />
+    
+    <CheckBoxPreference
+        android:key="pref_sync"
+        android:title="Use gestures"
+        android:summary="To realize actions"
+        android:enabled="false"
+        android:defaultValue="false" />
 
 </PreferenceScreen>

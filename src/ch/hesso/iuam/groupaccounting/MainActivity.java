@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import iuam.group.accounting.R;
 import android.app.Activity;
@@ -30,16 +30,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.example.android.fragments.AddExpenseFragment.ViewExpenseFragmentListener;
-import com.example.android.fragments.AddParticipantDialogFragment.NewParticipantFragmentListener;
-import com.example.android.fragments.HeadlinesFragment.HeadlinesFragmentListener;
+import ch.hesso.iuam.groupaccounting.AddExpenseFragment.ViewExpenseFragmentListener;
+import ch.hesso.iuam.groupaccounting.AddMemberDialogFragment.NewMemberFragmentListener;
+import ch.hesso.iuam.groupaccounting.HeadlinesFragment.HeadlinesFragmentListener;
 
-public class MainActivity extends Activity implements HeadlinesFragmentListener, ViewExpenseFragmentListener, NewParticipantFragmentListener {
+public class MainActivity extends Activity implements HeadlinesFragmentListener, ViewExpenseFragmentListener, NewMemberFragmentListener {
 
 	private boolean modifing;
 	private boolean isGroupSetupMode;
@@ -55,7 +54,6 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
         //If first launch = add participants mode
         isGroupSetupMode=true;
         setTitle(R.string.title_setup_group);
-        ((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE); 
         
         // Check whether the activity is using the layout version with
         // the fragment_container FrameLayout. If so, we must add the first fragment
@@ -73,10 +71,12 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
             args.putBoolean("isGroupSetupMode", isGroupSetupMode);
             firstFragment.setArguments(args);
             //firstFragment.setArguments(getIntent().getExtras());
-
+            
+            
             // Add the fragment to the 'fragment_container' FrameLayout
             getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, firstFragment, "headlines").commit();
+
         }
         
         /*
@@ -88,9 +88,10 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
         
         findViewById(android.R.id.content).post( new Runnable() {
 
-            @Override
+            @SuppressWarnings("deprecation")
+			@Override
             public void run() {
-                layout.setBackgroundResource(R.drawable.help);
+                layout.setBackgroundResource(R.drawable.help_group);
                 popUp.setContentView(layout);
                 popUp.setBackgroundDrawable(null);
                 popUp.setOutsideTouchable(true);
@@ -129,7 +130,6 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		}
 		super.onBackPressed();
 		((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
-		((ImageView)findViewById(R.id.background_image)).setVisibility(View.VISIBLE);
 		setTitle(R.string.title_expenses);
 	}
 
@@ -146,13 +146,14 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		super.onPrepareOptionsMenu(menu);
 		menu.findItem(R.id.menu_add).setVisible(true);
 		if(isGroupSetupMode){
-			if (Participant.getDescriptionStringArray().length==0){
-				menu.findItem(R.id.menu_done).setEnabled(false);
-				menu.findItem(R.id.menu_done).setIcon(R.drawable.ic_done_disabled);
+			menu.findItem(R.id.menu_add).setIcon(R.drawable.ic_member_add);
+			if (Member.getDescriptionStringArray().length==0){
+				menu.findItem(R.id.menu_done).setVisible(false);
 			}else{
 				menu.findItem(R.id.menu_done).setVisible(true);
 			}
 		}else{
+			menu.findItem(R.id.menu_add).setIcon(R.drawable.ic_content_new);
 			menu.findItem(R.id.menu_done).setVisible(false);
 		}
 		return true;
@@ -167,16 +168,15 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     		
     		if(isGroupSetupMode){
     			
-    			AddParticipantDialogFragment addParticipantDialog = new AddParticipantDialogFragment();
+    			AddMemberDialogFragment addParticipantDialog = new AddMemberDialogFragment();
     			addParticipantDialog.show(fm, "fragment_add_participant");
     		}else{
     			modifing = false;
-    			((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE);
-    			((ImageView)findViewById(R.id.helpImage)).setVisibility(View.GONE);
         		// Create fragment and give it an argument for the selected article        		
         		//TODO: into function
                 AddExpenseFragment newFragment = new AddExpenseFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack so the user can navigate back
@@ -193,9 +193,8 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     		if(isGroupSetupMode){
     			isGroupSetupMode=false;
     			item.setVisible(false);
+    			invalidateOptionsMenu();
     			((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
-    			((ImageView)findViewById(R.id.helpImage)).setImageResource(R.drawable.help_expenses);
-        		((ImageView)findViewById(R.id.helpImage)).setVisibility(View.VISIBLE);
         		
         		//Show help popup
         		layout.setBackgroundResource(R.drawable.help_expenses);
@@ -253,7 +252,6 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	            expenseFragment.updateExpenseView(position);
 	
 	        } else {
-	        	((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE);
 	            // If the frag is not available, we're in the one-pane layout and must swap frags...
 	
 	            // Create fragment and give it an argument for the selected article
@@ -262,6 +260,7 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	            args.putInt(AddExpenseFragment.ARG_POSITION, position);
 	            newFragment.setArguments(args);
 	            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 	
 	            // Replace whatever is in the fragment_container view with this fragment,
 	            // and add the transaction to the back stack so the user can navigate back
@@ -292,7 +291,6 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	            expenseFragment.updateExpenseView(position);
 	
 	        } else {
-	        	((ImageView)findViewById(R.id.background_image)).setVisibility(View.GONE);
 	            // If the frag is not available, we're in the one-pane layout and must swap frags...
 	
 	            // Create fragment and give it an argument for the selected article
@@ -301,6 +299,7 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 	            args.putInt(AddExpenseFragment.ARG_POSITION, position);
 	            newFragment.setArguments(args);
 	            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 	
 	            // Replace whatever is in the fragment_container view with this fragment,
 	            // and add the transaction to the back stack so the user can navigate back
@@ -313,7 +312,7 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
     	}
     	else{
     		FragmentManager fm = getFragmentManager();
-    		AddParticipantDialogFragment addParticipantDialog = new AddParticipantDialogFragment(Participant.getParticipants().get(position));
+    		AddMemberDialogFragment addParticipantDialog = new AddMemberDialogFragment(Member.getMembers().get(position));
 			addParticipantDialog.show(fm, "fragment_add_participant");
     	}
     }
@@ -323,11 +322,10 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		    	
 		if(!modifing)
 			Expense.addExpense(expense);
-		
-		((ImageView)findViewById(R.id.background_image)).setVisibility(View.VISIBLE);
         
 		HeadlinesFragment newFragment2 = new HeadlinesFragment();
         FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
+        transaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         
 		Bundle args = new Bundle();
         args.putBoolean(AddExpenseFragment.ARG_POSITION, isGroupSetupMode);
@@ -347,13 +345,12 @@ public class MainActivity extends Activity implements HeadlinesFragmentListener,
 		
 		if(!modifing){
 			Toast.makeText(this, inputText + " has been added to the group", Toast.LENGTH_SHORT).show();
-			Participant.addParticipants(new Participant(inputText));
+			Member.addMembers(new Member(inputText));
 		}
 		
 		((HeadlinesFragment)getFragmentManager().findFragmentByTag("headlines")).update(isGroupSetupMode);
 		
 		invalidateOptionsMenu(); //to force menu refresh to display done button
-		findViewById(R.id.helpImage).setVisibility(View.GONE);
 	}
 
 	public boolean isGroupSetupMode() {

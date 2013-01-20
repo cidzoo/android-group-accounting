@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import iuam.group.accounting.R;
 import android.app.Fragment;
@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 public class ViewExpenseFragment extends Fragment {

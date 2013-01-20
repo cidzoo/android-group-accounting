@@ -13,50 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import java.util.LinkedList;
 
-import android.text.format.Time;
-
-public class Participant {
+public class Member {
 
 	/*
 	 * Static
 	 */
-	private static int participantCounter;
-	private static LinkedList<Participant> participants = new LinkedList<Participant>();
+	private static int memberCounter;
+	private static LinkedList<Member> members = new LinkedList<Member>();
 
-	public static void addParticipants(Participant ex) { participants.add(ex); }
+	public static void addMembers(Member ex) { members.add(ex); }
 	
 	public static String[] getDescriptionStringArray(){
-		String[] nomArray = new String[participants.size()];
+		String[] nomArray = new String[members.size()];
 		
-		for(int i=0;i<participants.size();i++){
-			nomArray[i]=((Participant)participants.get(i)).name;
+		for(int i=0;i<members.size();i++){
+			nomArray[i]=((Member)members.get(i)).name;
 		}
 		
 		return nomArray;
 	}
 	
-	public static LinkedList<Participant> getParticipants() { return participants; }
+	public static LinkedList<Member> getMembers() { return members; }
 	
 	/*
 	 * Dynamic
 	 */
-	private int participantId;
+	private int memberId;
 	private String name;
 	
-	public Participant(String name){ 
-		participantId = ++participantCounter;
+	public Member(String name){ 
+		memberId = ++memberCounter;
 		this.name = name;
 	}
-
-	//public static LinkedList<Participant> getExpenses() { return participants; }
 
 	public void setName(String string) { this.name=string; }
 	public String getName(){ return name; }
 	
-	public void setParticipantId(int value) { participantId = value; }
-	public int getParticipantId() { return participantId; }
+	public void setParticipantId(int value) { memberId = value; }
+	public int getParticipantId() { return memberId; }
 }

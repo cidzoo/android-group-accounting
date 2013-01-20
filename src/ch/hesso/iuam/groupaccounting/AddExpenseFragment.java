@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import iuam.group.accounting.R;
 
@@ -99,12 +99,8 @@ public class AddExpenseFragment extends Fragment implements OnItemSelectedListen
         npUnit.setMinValue(0); npUnit.setMaxValue(9); npUnit.setWrapSelectorWheel(false); npUnit.setValue(0);
         
         /* Payer */
-		// Create an ArrayAdapter using the string array and a default spinner layout
-//		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
-//		    R.array.members_array, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_dropdown_item,Participant.getDescriptionStringArray());
-		// Specify the layout to use when the list of choices appears
-		//adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(getActivity(),android.R.layout.simple_spinner_dropdown_item,Member.getDescriptionStringArray());
 		// Apply the adapter to the spinner
 		spinnerMembers.setAdapter(adapter);
 		spinnerMembers.setOnItemSelectedListener((OnItemSelectedListener) this);
@@ -201,12 +197,6 @@ public class AddExpenseFragment extends Fragment implements OnItemSelectedListen
         	
         	/* Price */
         	currentExpense.setPrice(npHundred.getValue()*100 + npDecade.getValue()*10 + npUnit.getValue());
-//    		try{
-//    			currentExpense.setPrice(Integer.valueOf(editHowMuch.getText().toString()));
-//    		}catch(NumberFormatException e){
-//    			Toast.makeText(getActivity(), getString(R.string.toast_no_price), Toast.LENGTH_SHORT).show();
-//    			return true; //consumed
-//    		}
     		
     		/* Description */
     		if(editWhat.getText().length() > 0)

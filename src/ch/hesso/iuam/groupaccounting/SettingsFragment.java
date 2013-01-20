@@ -1,4 +1,4 @@
-package com.example.android.fragments;
+package ch.hesso.iuam.groupaccounting;
 
 import iuam.group.accounting.R;
 import android.os.Bundle;
